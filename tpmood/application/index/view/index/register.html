@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mooddiary，记录心情记录美好</title>
+    <script src="/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/static/lib/layui/css/layui.css">
+    <script src="/static/lib/layui/layui.all.js"></script>
+    <link rel="stylesheet" href="/static/css/reset.css">
+    <link rel="stylesheet" href="/static/css/total.css">
+</head>
+<style>
+    body{
+        background:url('/static/image/login_bg01.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
+    a{
+        color: #fff;
+    }
+    .index_register_title{
+        padding-top: 50px;
+        font-size: 90px;
+        text-align: center;
+        margin-bottom: 10px;
+        /* color: #63B8FF; */
+        color: #fff;
+    }
+
+    .index_register_con{
+        margin-top: 40px;
+    }
+
+    input{
+        display: block;
+        width: 260px;
+        height: 30px;
+        margin: 0 auto 0;
+        border-radius: 5px;
+        outline: none;
+        border: 2px solid #FFBBFF;
+        text-indent: 10px;
+        font-size: 15px;
+    }
+
+    .register_password,.register_conpass,.register_username,.register_email{
+        margin-top: 20px;
+    }
+
+    button{
+        width: 80px;
+        height: 40px;
+        background-color: #EEAEEE;
+        outline: none;
+        border-radius: 3px;
+        border: 0;
+        color: #fff;
+    }
+</style>
+
+<script>
+    function index_register() {
+        var email = $('.register_email').val();
+        var password = $('.register_password').val();
+        var conpass = $('.register_conpass').val();
+        var username = $('.register_username').val();
+        $.ajax({
+            url:"{:url('index/index/register')}",
+            type:'post',
+            data:{email:email,password:password,conpass:conpass,username:username},
+            dataType:'json',
+            success:function (data) {
+                if(data.code == 1){
+                    layer.msg(data.msg,{
+                        icon:6,
+                        time:2000
+                    },function () {
+                        location.href = data.url;
+                    })
+                }else {
+                    layer.open({
+                        title:"注册失败",
+                        content:data.msg,
+                        icon:5,
+                        anim:6
+                    })
+                }
+            }
+        });
+    }
+</script>
+
+<body>
+<div class="index_register_title">
+    Mood Diaary
+</div>
+<span style="color:#fff;display:block;width: 100%;text-align: center;font-size: 13px;">你的所有努力都应该活成你想要的样子</span>
+<span style="color:#ffff;display:block;width: 100%;text-align: center;font-size: 13px;font-style: italic;">All your efforts should live up to what you like</span>
+<div class="index_register_con">
+    <input type="text" placeholder="用户名" class="register_username">
+    <input type="text" placeholder="密码" class="register_password">
+    <input type="text" placeholder="确认密码" class="register_conpass">
+    <input type="text" placeholder="邮箱" class="register_email">
+</div>
+<div style="width: 260px;margin: 15px auto 0;">
+    <button onclick="index_register()" style="float: left;cursor: pointer;font-weight: bold">注  &nbsp;册</button>
+</div>
+<span style="display: block;width: 260px;margin: 75px auto 0;text-align: left;font-size: 13px;"><a href="{:url('index/index/login')}"><<返回登录页</a></span>
+</body>
+</html>

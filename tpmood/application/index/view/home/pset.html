@@ -1,0 +1,142 @@
+{extend name="public/base" /}
+{block name="title"}
+    个人设置
+{/block}
+{block name="js"}
+    <script>
+        function pset() {
+            var username = $('#username').val();
+            var signature = $('#signature').val();
+            var sex = $("input[name='sex']:checked").val();
+            $.ajax({
+                url:"{:url('index/home/pset',['id'=>$user.id])}",
+                type:'post',
+                data:{username:username,signature:signature,sex:sex},
+                dataType:'json',
+                success:function (data) {
+                    if(data.code==1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        })
+                    }else {
+                        layer.open({
+                            title:"个人信息修改失败",
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        });
+                    }
+                }
+            });
+
+        }
+
+    </script>
+{/block}
+{block name="style"}
+    <style>
+        .pset_con{
+            width: 1000px;
+            margin: 0 auto 0;
+        }
+
+        .pset_head{
+            font-size: 30px;
+            font-weight: bold;
+            color: cornflowerblue;
+            height: 90px;
+            text-align: left;
+            line-height: 90px;
+
+        }
+        .psettings{
+            width: 800px;
+            margin:50px auto 0;
+        }
+        .psettings div{
+            margin-bottom: 30px;
+        }
+        input{
+            display: inline-block;
+            height: 25px;
+            width: 230px;
+        }
+        button{
+            width: 110px;
+            height: 35px;
+            cursor: pointer;
+            background-color: cornflowerblue;
+            border: 1px solid cornflowerblue;
+            color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+{/block}
+{block name="content"}
+<div class="pset_con">
+    <div class="pset_head">
+        个人设置
+        <hr style="margin-top: 0;">
+    </div>
+    <div class="psettings">
+        <div class="pusername">
+            <span>昵称 &nbsp;</span>
+            <span>
+                    <input type="text" value="{$user.username}" id="username">
+                </span>
+        </div>
+
+        <div class="psignature" style="display: flex;margin-bottom: 0px;">
+            <div style="padding-top: 5px;">签名 &nbsp;&nbsp;</div>
+            <div>
+                <textarea name="" id="signature" cols="30" rows="3">{$user.signature}</textarea>
+            </div>
+        </div>
+
+        <div class="email">
+            <span>邮箱 &nbsp;</span>
+            <span>
+                    <input type="text" value="{$user.email}" id="email" disabled>
+                </span>
+            <span><a href="{:url('index/home/cemail',['id'=>$user.id])}" style="color: #00aaee">更改</a></span>
+        </div>
+
+        <div class="email">
+            <span>性别 &nbsp;</span>
+            <span>
+                <input type="radio" name ="sex" value="1" {if $user.sex == 1}checked{/if} style="width:30px;height: 10px">男
+            　　<input type="radio" name ="sex" value="0" {if $user.sex == 0}checked{/if} style="width:30px;height: 10px">女
+            　　<input type="radio" name ="sex" value="2" {if $user.sex == 2}checked{/if} style="width:30px;height: 10px">保密   （默认值）
+            </span>
+
+        </div>
+
+        <div class="photo" >
+            <span>头像 &nbsp;</span>
+            <span>
+                    <img src="/uploads/{$user.photo.path}" alt="头像" style="display: inline-block;width:150px;height: 150px;border-radius: 5px;overflow: hidden">
+            </span>
+
+        </div>
+
+        <div class="change_pass" style="text-indent: 43px;">
+            <a href="{:url('index/home/cphoto',['id'=>$user.id])}" style="color: #00aaee">修该头像</a>
+        </div>
+
+        <div class="change_pass" style="text-indent: 43px;">
+            <a href="{:url('index/home/cpass',['id'=>$user.id])}" style="color: #00aaee">修该密码</a>
+        </div>
+
+        <div class="putinfo" style="text-indent: 43px;">
+            <button onclick="pset()">更新个人资料</button>
+        </div>
+
+    </div>
+
+
+
+</div>
+{/block}

@@ -1,0 +1,129 @@
+{extend name="public/base" /}
+{block name="title"}
+后台管理|网站设置
+{/block}
+{block name="js"}
+<script>
+    $(function () {
+        $('#save').click(function () {
+            var domain = $('#domain').val();
+            var IP = $('#ip').val();
+            var port= $('#port').val();
+            var email = $('#email').val();
+            $.ajax({
+                url:"{:url('admin/index/cindex')}",
+                type:"post",
+                data:{domain:domain,IP:IP,port:port,email:email},
+                dataType:'json',
+                success:function (data) {
+                    if(data.code == 1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        })
+                    }else {
+                        layer.open({
+                            title:"修改失败！",
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        });
+                    }
+                }
+            });
+
+            return false;
+        });
+    });
+</script>
+{/block}
+
+{block name="style"}
+<style>
+    html,body{
+        height:100%;
+        /* background-color: #393D49; */
+    }
+    input{
+        display: inline-block;
+        height:25px;
+        width: 260px;
+        border-radius: 5px;
+        border:0;
+        text-indent: 10px;
+        margin-left: 150px;
+    }
+
+    .con{
+        height: 100%;
+    }
+    .con{
+        display: flex;
+        background-color: #393D49;
+        height: 100%;
+        margin-top: 5px;
+    }
+    .con_left{
+        width:230px;
+        border-right: 1px solid #fff;
+
+    }
+    .con_right{
+        width: calc(100% - 230px);
+    }
+    .nbar{
+        height: 35px;
+        line-height: 35px;
+        border-bottom: 1px solid #CDC0B0;
+    }
+
+
+    .set{
+        padding:10px;
+    }
+
+</style>
+{/block}
+{block name="content"}
+<div class="con_right">
+    <div class="nbar">
+        <span class="layui-icon layui-icon-home" style="font-size: 13px;display: inline-block;width: 90px;text-indent: 10px;color: #fff;"><a href="" style="color: #fff;"> 我的主页</a></span>
+    </div>
+    <div>
+
+        <div class="set">
+            <div style="height: 50px;line-height: 50px;color: #fff;font-size: 18px">
+                网站设置
+            </div>
+            <hr>
+            <div style="padding: 50px">
+                <div style="color: #fff;position: relative">
+                    <span style="position: absolute;top: 0;left: 0">Domain：</span>
+                    <input type="text" value="{$web.domain}" id="domain">
+                </div>
+                <hr>
+                <div style="color: #fff;position: relative">
+                    <span style="position: absolute;top: 0;left: 0">IP：</span>
+                    <input type="text" value="{$web.ip}" id="ip">
+                </div>
+                <hr>
+                <div style="color: #fff;position: relative">
+                    <span style="position: absolute;top: 0;left: 0">Port：</span>
+                    <input type="text" value="{$web.port}" id="port">
+                </div>
+                <hr>
+                <div style="color: #fff;position: relative">
+                    <span style="position: absolute;top: 0;left: 0">Email：</span>
+                    <input type="text" value="{$web.email}" id="email">
+                </div>
+                <hr>
+
+
+            <button id="save" type="button" style="float: right;margin-top: 10px;margin-right: 10px" class="layui-btn layui-btn-normal">保存</button>
+        </div>
+    </div>
+</div>
+</div>
+{/block}

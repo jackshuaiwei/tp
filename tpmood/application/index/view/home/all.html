@@ -1,0 +1,84 @@
+{extend name="public/base" /}
+{block name="title"}
+    日记墙
+{/block}
+{block name="js"}
+    <script>
+        $(function () {
+            $('.all_text').each(function () {
+                var str = $(this).text().trim();
+                if(str.length>200){
+                    str = str.substr(0,160) + "......";
+                    $(this).text(str);
+                }
+                else{
+                    $(this).text(str);
+                }
+
+            });
+        })
+
+    </script>
+{/block}
+{block name="style"}
+    <style>
+        body{
+            background-color: #fdf7f9;
+        }
+        .container {
+            width: 1000px;
+            padding: 10px;
+            background:#fcfef6;
+            column-count: 4;
+            column-gap: 1em;
+            column-width: 220px;
+
+        }
+        .img-container {
+            margin-bottom: 10px;;
+            break-inside: avoid;
+            border: 2px solid #AEEEEE;
+            padding: 10px;
+            background-color: #fafffe;
+
+        }
+        .img-container:hover{
+            cursor: pointer;
+        }
+        .img-container img:hover{
+            opacity: 0.5;
+        }
+        img {
+            width: 100%;
+        }
+
+        .all_text{
+            margin-top: 25px;
+            max-height: 200px;
+            display: inline-block;
+            font-size: 13px;
+            overflow: hidden;
+        }
+
+    </style>
+{/block}
+
+{block name="content"}
+<div class="find_record" style="text-align: center;font-size: 25px;height: 55px;line-height: 55px;color:#EEAEEE;">
+    Find Diaary
+</div>
+
+<div class="container" style="margin:0 auto 0">
+    {volist name="record" id="re"}
+    <a href="{:url('index/home/detail',['rid'=>$re.id])}">
+        <div class="img-container" >
+            <img src="/uploads/{$re.user.photo.path}" alt="头像">
+            <div class="all_text">
+                {$re.content|rep1|rep2|raw}
+            </div>
+        </div>
+    </a>
+    {/volist}
+</div>
+{/block}
+

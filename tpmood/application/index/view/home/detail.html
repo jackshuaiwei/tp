@@ -1,0 +1,248 @@
+{extend name="public/base" /}
+{block name="title"}
+    日记详情
+{/block}
+{block name="js"}
+    <script>
+        function reply(){
+            var data = $('.content_input').val();
+            var rid = $('.content_input').attr('rid');
+            $.ajax({
+                url:"{:url('index/home/comment')}",
+                type:"post",
+                data:{data:data,rid:rid},
+                dataType:'json',
+                success:function (data) {
+                    console.log(data);
+                    if(data.code == 1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        });
+                    }else {
+                        layer.open({
+                            title:"回复失败",
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        });
+                    }
+                }
+            });
+
+        }
+
+        $(function () {
+            var flag = true;
+            var song = document.getElementById('song');
+            $('#music').click(function(){
+                // alert('sb');
+                if(flag == false){
+                    $('#music').removeClass('layui-icon layui-icon-pause').addClass('layui-icon layui-icon-play')
+                    flag = true;
+                    song.pause();
+                }
+                else{
+                    $('#music').removeClass('layui-icon layui-icon-play').addClass('layui-icon layui-icon-pause')
+                    flag = false;
+                    song.play();
+                }
+                song.addEventListener('ended',function(){
+                    $('#music').removeClass().addClass('layui-icon layui-icon-play');
+                })
+            })
+
+            $('.detail_content_list li').mouseover(function () {
+                $('.s_reply').css({"display":"inline-block"});
+            });
+            $('.detail_content_list li').mouseout(function () {
+                $('.s_reply').css({"display":"none"});
+            });
+
+            $('.s_reply').click(function () {
+                var username = $('.s_reply').attr('username');
+                var str = "回复 @" + username +" ：";
+                $('.content_input').val(str);
+
+                return false;
+            })
+
+        });
+
+    </script>
+{/block}
+{block name="style"}
+    <style>
+        body{
+            background-color:#F5FFFA;
+        }
+        ul,li{
+            padding:0;
+            margin: 0;
+            list-style: none;
+        }
+        .mid_con{
+            width: 730px;
+            margin: 35px auto 0;
+
+        }
+        .mid_1{
+            height: 65px;
+            box-shadow: 5px 5px 10px #888888;
+            overflow: hidden;
+            padding:10px;
+        }
+        .user_img{
+            width: 60px;
+            height: 60px;
+            border-radius: 5px;
+            overflow: hidden;
+            float: left;
+        }
+        .mid_text{
+            margin: 30px 0 0 0 ;
+            padding:40px;
+            box-shadow: 10px 10px 5px #808f9d;
+            background-color: #F5F5DC;
+            border-radius: 5px;
+        }
+        .user_nickname{
+            height: 35px;
+            float: left;
+            font-size: 22px;
+            margin-left: 15px;
+            margin-top: 10px;
+        }
+        .user_nickname a{
+            color: #00aaee;
+        }
+        .mid_text_title{
+            font-size: 20px;
+            color: lightgray;
+        }
+        .mid_text_content{
+            margin-top: 20px;
+            color: #FF69B4;
+            text-indent: 25px;
+        }
+        .mid_content{
+            margin-top: 30px;
+            width: 730px;
+
+        }
+        .content_input{
+            display: inline-block;
+            width: 400px;
+            height: 35px;
+            text-indent: 10px;
+        }
+        .content_reply{
+            overflow: hidden;
+            height: 50px;
+        }
+        .btn_reply{
+            width: 90px;
+            border: 0;
+            background-color: cornflowerblue;
+            outline: none;
+            height: 40px;
+            margin-left: 15px;
+            border-radius: 5px;
+            color: #fff;
+        }
+        .btn_reply:hover{
+            cursor: pointer;
+            box-shadow: 0px 0px 3px cornflowerblue;
+        }
+
+        .detail_content_list li{
+            border-bottom: 1px dashed lightgray;
+            padding-bottom: 10px;
+            padding-top: 10px;
+
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+        .s_reply{
+            display: none;
+            float: right;
+            color: #00aaee
+        }
+        .s_reply:hover{
+            cursor:pointer;
+        }
+
+
+
+    </style>
+{/block}
+{block name="content"}
+    <div class="mid_con">
+        <div class="mid_1">
+            <div class="user_img">
+                <img src="/uploads/{$user.photo.path}" style="display: inline-block;width: 100%;" alt="头像" >
+            </div>
+
+            <div class="user_nickname">
+                <a href="{:url('index/home/user_center',['id'=>$user.id])}">{$user.username}</a>
+            </div>
+        </div>
+        <div class="mid_text" style="padding-top: 5px">
+            <div style="font-style: italic;color: #00aaee">
+                <sapn class="layui-icon layui-icon-release"></sapn>&nbsp;&nbsp;mooddiaary &nbsp;
+                <span class="layui-icon layui-icon-play" style="font-size: 12px;cursor:pointer" id="music"> ~song~</span>
+                <span style="display: none">
+                    <audio src="{$record.song_url}" id="song"></audio>
+                </span>
+                <hr style="margin-top: 5px">
+            </div>
+            <div class="mid_text_title">
+                <span class="layui-icon layui-icon-tree" style="font-size: 20px">&nbsp;<{$record.title}>&nbsp;</span>
+                <span class="layui-icon layui-icon-time" style="font-size: 13px">&nbsp;{$record.create_time}</span>
+            </div>
+            <div class="mid_text_content">
+                {$record.content|raw}
+            </div>
+        </div>
+        <div class="mid_content">
+            <div class="content_reply">
+                <span class="layui-icon layui-icon-dialogue" style="font-size: 30px;"></span>
+                <input type="text" class="content_input" rid="{$record.id}">
+                <button class="btn_reply" onclick="reply()">回复</button>
+            </div>
+            <hr style="margin-top: 20px">
+
+            <ul class="detail_content_list">
+                {volist name="comment" id="vo"}
+                <li>
+                    <div class="container">
+                        <div class="col" style="width: 5%;margin-right: 10px">
+                            <div ><img style="display: inline-block;width: 35px;height: 35px" src="/uploads/{$vo.user.photo.path}" alt="头像"></div>
+                        </div>
+                        <div class="col" style="width: 95%" >
+                            <span><a href="{:url('index/home/user_center',['id'=>$vo.user.id])}" style="color: #00aaee">{$vo.user.username}&nbsp;&nbsp;</a></span>
+                            <span style="color: #363636">
+
+                            {$vo.content}
+                            </span>
+                            <br>
+                            <span style="font-size: 12px;color: #B4CDCD">
+                                {$vo.create_time}
+                                <span class="s_reply" username="{$vo.user.username}">回复</span>
+                            </span>
+
+                        </div>
+                    </div>
+                </li>
+                {/volist}
+            </ul>
+
+
+        </div>
+    </div>
+{/block}

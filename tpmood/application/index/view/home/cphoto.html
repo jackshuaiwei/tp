@@ -1,0 +1,130 @@
+{extend name="public/base" /}
+{block name="title"}
+    用户头像修改
+{/block}
+{block name="js"}
+    <script>
+        function upload() {
+            var formData = new FormData()  //创建一个forData
+            formData.append('image', $('#pic_img')[0].files[0])  //把file添加进去  name命名为img
+            $.ajax({
+                url: "{:url('index/home/cphoto',['id'=>input('id')])}",
+                data: formData,
+                type: "POST",
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    console.log(data);
+                    if(data.code == 1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        })
+                    }else {
+                        layer.open({
+                            title:'上传头像失败',
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        })
+                    }
+            },
+            error: function() {
+                alert('失败！')
+            }
+        })
+        }
+
+    </script>
+{/block}
+{block name="style"}
+    <style>
+        .cphoto_con{
+            width: 800px;
+            margin: 0 auto 0;
+
+        }
+
+        .cphoto_head{
+            font-size: 30px;
+            font-weight: bold;
+            color: cornflowerblue;
+            height: 90px;
+            text-align: left;
+            line-height: 90px;
+        }
+
+        .photo_con{
+            margin-top: 30px;
+            display: flex;
+        }
+
+        .pleft{
+            width: 35%;
+            height: 500px;
+            margin-right: 50px;
+
+        }
+
+        .pright{
+            width: 50%;
+            height: 500px;
+            margin-right: 50px;
+
+        }
+
+        button{
+            width: 70px;
+            height: 30px;
+            background-color: cornflowerblue;
+            border-radius: 5px;
+            border: 0;
+            color: #fff;
+        }
+        button:hover{
+            cursor: pointer;
+            box-shadow: 0px 0px 5px cornflowerblue;
+        }
+
+    </style>
+{/block}
+{block name="content"}
+<div class="cphoto_con">
+    <div class="cphoto_head">
+        修改头像
+        <hr style="margin-top: 0;">
+    </div>
+
+    <div class="photo_con">
+        <div class="pleft">
+            <div>
+                个人设置隐私头像系统小红花<br>
+                请上传JPG、PNG格式的图片<br>
+
+                上传成功后如果图片不更新，你可以用浏览器多刷新几次。
+            </div>
+<!--            <form id="upform" enctype="multipart/form-data">-->
+                <div style="margin-top: 20px;margin-bottom: 20px;">
+                    <input type="file" name="image" id="pic_img">
+                </div>
+                <div>
+                    <button onclick="upload()">上传头像</button>
+                </div>
+<!--            </form>-->
+        </div>
+        <div class="pright">
+            <div style="height: 50px;font-size: 20px;">
+                您当前的头像：
+            </div>
+            <div style="padding: 5px;box-shadow: 0px 0px 5px #00CDCD;width: 300px;height: 300px;">
+                <img src="/uploads/{$user.photo.path}" alt="头像" style="display: inline-block;width: 100%;height: 100%">
+            </div>
+        </div>
+    </div>
+
+</div>
+{/block}

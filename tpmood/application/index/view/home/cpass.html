@@ -1,0 +1,114 @@
+{extend name="public/base" /}
+{block name="title"}
+    密码修改
+{/block}
+{block name="style"}
+    <style>
+        .cpass_con{
+            width: 800px;
+            margin: 0 auto 0;
+
+        }
+
+        .cpass_head{
+            font-size: 30px;
+            font-weight: bold;
+            color: cornflowerblue;
+            height: 90px;
+            text-align: left;
+            line-height: 90px;
+        }
+
+        input{
+            display: inline-block;
+            height: 25px;
+            width: 230px;
+        }
+
+        .oldpass{
+            margin-top: 30px;
+        }
+        .cpass_con div{
+            margin-bottom: 30px;
+            display: flex;
+        }
+        .cpass_con div span{
+            display: block;
+            width: 100px;
+            text-align: right;
+            margin-right: 20px;
+        }
+        button{
+            width: 60px;
+            height: 30px;
+            background-color: cornflowerblue;
+            border-radius: 5px;
+            border: 0;
+            color: #fff;
+        }
+        button:hover{
+            cursor: pointer;
+            box-shadow: 0px 0px 5px cornflowerblue;
+        }
+    </style>
+{/block}
+{block name="js"}
+    <script>
+        function cpass(){
+            var now_pass = $('#1').val();
+            var new_pass = $('#2').val();
+            var con_pass = $('#3').val();
+
+            $.ajax({
+                url:"{:url('index/home/cpass',['id'=>session('name')['id']])}",
+                type:'post',
+                data:{now_pass:now_pass,new_pass:new_pass,con_pass:con_pass},
+                dataType:'json',
+                success:function (data) {
+                    if(data.code == 1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        })
+                    }else{
+                        layer.open({
+                            title:'修改密码失败',
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        })
+                    }
+                }
+            });
+        }
+    </script>
+{/block}
+{block name="content"}
+<div class="cpass_con">
+    <div class="cpass_head">
+        修改密码
+    </div>
+    <hr style="margin-top: -30px;">
+    <div class="oldpass">
+        <span>当前的密码</span>
+        <input type="password" id='1'>
+    </div>
+
+    <div class="newpass">
+        <span>新密码</span>
+        <input type="password" id='2'>
+    </div>
+
+    <div class="conpass">
+        <span>确认密码</span>
+        <input type="password" id='3'>
+    </div>
+
+    <div>
+        <span></span>
+        <button onclick="cpass()">修改</button>
+    </div>
+</div>
+{/block}

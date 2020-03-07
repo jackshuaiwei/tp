@@ -1,0 +1,113 @@
+{extend name="public/base" /}
+{block name="title"}
+    邮箱修改
+{/block}
+{block name="style"}
+    <style>
+        .cemail_con{
+            width: 800px;
+            margin: 0 auto 0;
+
+        }
+
+        .cemail_head{
+            font-size: 30px;
+            font-weight: bold;
+            color: cornflowerblue;
+            height: 90px;
+            text-align: left;
+            line-height: 90px;
+        }
+
+        input{
+            display: inline-block;
+            height: 25px;
+            width: 230px;
+        }
+
+        .password{
+            margin-top: 30px;
+        }
+        .cemail_con div{
+            margin-bottom: 30px;
+            display: flex;
+        }
+        .cemail_con div span{
+            display: block;
+            width: 100px;
+            text-align: right;
+            margin-right: 20px;
+        }
+        button{
+            width: 70px;
+            height: 30px;
+            background-color: cornflowerblue;
+            border-radius: 5px;
+            border: 0;
+            color: #fff;
+        }
+        button:hover{
+            cursor: pointer;
+            box-shadow: 0px 0px 5px cornflowerblue;
+        }
+    </style>
+{/block}
+{block name="js"}
+    <script>
+        function cemail() {
+            var email = $('#email').val();
+            var password = $('#password').val();
+            $.ajax({
+                url:"{:url('index/home/cemail',['id'=>session('name')['id']])}",
+                type:'post',
+                data:{email:email,password:password},
+                dataType:'json',
+                success:function (data) {
+                    if(data.code == 1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        })
+                    }else {
+                        layer.open({
+                            title:'更新邮箱失败',
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        })
+                    }
+
+                }
+
+            });
+        }
+    </script>
+{/block}
+{block name="content"}
+<div class="cemail_con">
+    <div class="cemail_head">
+        修改邮箱
+
+    </div>
+    <hr style="margin-top: -30px;">
+
+    <div class="password">
+        <span>密码</span>
+        <input type="text" id='password'>
+    </div>
+
+    <div class="oldcemail">
+        <span>新邮箱</span>
+        <input type="text" id='email'>
+    </div>
+
+
+
+    <div>
+        <span></span>
+        <button onclick="cemail()">更新邮箱</button>
+    </div>
+</div>
+{/block}
